@@ -28,7 +28,7 @@ matcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck = True)
 matches = matcher.match(d1, d2)
 
 # Sort matches on the basis of their Hamming distance.
-matches.sort(key = lambda x: x.distance)
+matches= tuple(sorted(matches,key = lambda x: x.distance))
 
 # Take the top 90 % matches forward.
 matches = matches[:int(len(matches)*0.9)]
@@ -39,8 +39,8 @@ p1 = np.zeros((no_of_matches, 2))
 p2 = np.zeros((no_of_matches, 2))
 
 for i in range(len(matches)):
-p1[i, :] = kp1[matches[i].queryIdx].pt
-p2[i, :] = kp2[matches[i].trainIdx].pt
+    p1[i, :] = kp1[matches[i].queryIdx].pt
+    p2[i, :] = kp2[matches[i].trainIdx].pt
 
 # Find the homography matrix.
 homography, mask = cv2.findHomography(p1, p2, cv2.RANSAC)
@@ -52,3 +52,4 @@ transformed_img = cv2.warpPerspective(img1_color,
 
 # Save the output.
 cv2.imwrite('output.jpg', transformed_img)
+
